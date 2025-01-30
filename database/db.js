@@ -1,23 +1,17 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize } = require('sequelize'); // Import Sequelize
 
-const sequelize = new Sequelize('test_db', 'postgres', 'admin123',{
-
-    host: 'localhost',
-    dialect: 'postgres',
-    port: 5432,
-    logging: false,
+// Create Sequelize instance with hardcoded database credentials
+const sequelize = new Sequelize('merothau', 'postgres', 'admin123', {
+    host: 'localhost',    // Database host
+    dialect: 'postgres',  // Correct dialect for PostgreSQL
+    port: 5432,           // PostgreSQL default port
+    logging: false,       // Disable logging
+    define: {
+        timestamps: false, // Disable automatic timestamps
+    },
 });
 
-async function testConnection() {
-    try{
-        await sequelize.authenticate();
-        console.log('DB connection successful............................')
-    }
-    catch(error){
-        console.error('Unable to connect to the database...............', error)
+// Test conne
 
-}    
-}
-testConnection()
-
+// Export the Sequelize instance
 module.exports = sequelize;

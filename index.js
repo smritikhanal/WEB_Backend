@@ -1,33 +1,38 @@
-//Initialization
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const sequelize = require('./database/db');
-const userRoute = require('./routes/userRoute')
+const bodyParser = require('body-parser'); // Optional (useful for legacy projects)
 
-//Creating a Server
+const sequelize = require('./database/db'); // Import Sequelize instance
+const UserRoutes = require('./routes/UserRoutes'); // Import user routes
+const authRoutes = require('./routes/auth'); // Path to your auth route
+
 const app = express();
+const PORT = 3000;
 
-//Creating a port
-const PORT = process.env.PORT || 5000
+// Middleware 
 
-//Creating a middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+// app.use('/api/auth', authRoutes);
 
 
-app.get('/login',(req, res)=>{
-    res.send("Welcome to the web page")
-})
+app.use(express.json()); // Built-in body parser for JSON
+app.use(bodyParser.urlencoded({ extended: true })); // Optional: for parsing form-urlencoded data
 
 
-app.use('/users', userRoute);
+// API Routes
+app.use('/api/users', UserRoutes);
 
+// Test DB Connection
+(async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Connected to the PostgreSQL database!');
+        await sequelize.sync(); // Sync models to database
+    } catch (error) {
+        console.error('Unable to connect to the database:', error.message);
+    }
+})();
 
-//Running on PORT
-app.listen(PORT, ()=>{
-    console.log(`Server Running on........................ PORT ${PORT}`)
-})
-
-
+// Start Server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
